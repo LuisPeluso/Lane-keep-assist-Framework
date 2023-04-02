@@ -212,10 +212,10 @@ def regress_a_lane(img, x, y, color=[255, 0, 0], thickness=10):#lane overlay thi
     # find the two end points of the line by using slope and iter, and then visulize the line
     if reg.coef_ < 0:  # left lane
         p1_x, p1_y, p2_x, p2_y = findTwoPoints(slope, inter, 'l', height)
-        cv2.line(img, (p1_x, p1_y), (p2_x, p2_y), color, thickness)
+        #cv2.line(img, (p1_x, p1_y), (p2_x, p2_y), color, thickness)    #drawing is done in LV
     else:  # right lane
         p1_x, p1_y, p2_x, p2_y = findTwoPoints(slope, inter, 'r', height)
-        cv2.line(img, (p1_x, p1_y), (p2_x, p2_y), color, thickness)
+        #cv2.line(img, (p1_x, p1_y), (p2_x, p2_y), color, thickness)
 
     return [p1_x, p1_y, p2_x, p2_y]
 
@@ -226,8 +226,8 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=15):
     (3) handle the left/right lane points to a linear regressor to fit the line, with additional 
         steps to remove the outliers for getting a better fit.
     """
-    threshold_angle = 25#25  # if the line angle is between -25 to 25 degrees, lines are discarded
-    threshold_slope = math.tan(threshold_angle / 180 * math.pi)
+    threshold_angle = 20#25  # if the line angle is not between +-threshold_angle (degrees), lines are discarded
+    threshold_slope = math.tan(threshold_angle*math.pi/180)#(threshold_angle / 180 * math.pi)
     left_lane_x = []
     left_lane_y = []
     right_lane_x = []
@@ -236,9 +236,9 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=15):
     
     for line in lines:
         for x1, y1, x2, y2 in line:
-            if x2 != x1:
+            if x2 != x1:    #avoid vertical lines
                 slope = float(y2 - y1) / float(x2 - x1)
-                if abs(slope) < threshold_slope:  # remove the horizontal lines
+                if (abs(slope) < threshold_slope):# and (180 - abs(slope) > threshold_slope)  :  # remove the horizontal lines
                     continue
                 elif slope < 0:  # left lane, note the origin is on the left-up corner of the image
                     left_lane_x.append([x1])
@@ -256,8 +256,15 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=15):
     Right_lane_pts = []
     if len(left_lane_x) > 0:  # if there are no enough points at the current frame
         Left_lane_pts= regress_a_lane(img, left_lane_x, left_lane_y)
+
+        # #debug info:
+        # Left_lane_pts = [[left_lane_x[i], left_lane_y[i]] for i in range(0, len(left_lane_x))]
+
     if len(right_lane_x) > 0:
         Right_lane_pts= regress_a_lane(img, right_lane_x, right_lane_y)
+
+        # #debug info:
+        # Right_lane_pts = [right_lane_x[i], right_lane_y[i] for i in range(0, len(right_lane_x))]
 
     return [[Left_lane_pts] , [Right_lane_pts]] #should mathc 3D array
 

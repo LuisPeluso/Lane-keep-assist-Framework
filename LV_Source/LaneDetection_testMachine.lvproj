@@ -68,6 +68,7 @@
 			<Item Name="Imaq_to_pythonArray.vi" Type="VI" URL="../python acessors/Imaq_to_pythonArray.vi"/>
 		</Item>
 		<Item Name="Framework_lib.lvlib" Type="Library" URL="../SubVis/QMH/Framework_lib.lvlib"/>
+		<Item Name="test_perspective.vi" Type="VI" URL="/C/Users/lfpelusosilva/Desktop/test_perspective.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="BuildHelpPath.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/BuildHelpPath.vi"/>
